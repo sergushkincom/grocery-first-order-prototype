@@ -1,33 +1,26 @@
-# grocery-first-order-prototype
+# Grocery first-order prototype
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [v0](https://v0.app).
+A clickable prototype of a first-order flow for an online grocery shop in Germany. Mock data only — no real orders or payments. Not affiliated with any real shop.
 
-## Built with v0
+**Live:** https://grocery-first-order-prototype.vercel.app
 
-This repository is linked to a [v0](https://v0.app) project. You can continue developing by visiting the link below -- start new chats to make changes, and v0 will push commits directly to this repo. Every merge to `main` will automatically deploy.
+## The idea
 
-[Continue working on v0 →](https://v0.app/chat/projects/prj_4RUmRLn7Is7Lb6p9yZtSXEu0nZ2e)
+New customers build a cart before they know the deal: the minimum order, the delivery fee, the next free slot, and the final price. They learn these rules one by one, close to payment. This prototype shows the deal first and keeps it visible.
 
-## Getting Started
+## Flow
 
-First, run the development server:
+1. Welcome window — postcode check, then the deal: minimum order, free first delivery, next slot, starting credit.
+2. Shopping — the deal bar stays visible with progress to the minimum. "Mit KI auffüllen" suggests items; the customer confirms.
+3. Cart — one compact summary, delivery-fee tiers on demand, card hold for weighed items explained in one line.
+4. Checkout — neutral icons, three clear states (done / open / error), a stepper, and an order button that says what's still missing.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## How it was built
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Generated with v0 from one prompt, then reviewed round by round. Each commit after the first is one review round; pull request #1 sums them up.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Deliberately not built: quantity discounts and an upsell window before checkout.
 
-## Learn More
+## Stack
 
-To learn more, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [v0 Documentation](https://v0.app/docs) - learn about v0 and how to use it.
+Next.js, TypeScript, Tailwind. Business rules in `config.ts`, mock products in `data/products.ts`.

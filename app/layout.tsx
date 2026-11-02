@@ -6,6 +6,7 @@ import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { CartDrawer } from '@/components/cart/cart-drawer'
 import { WelcomeModal } from '@/components/welcome-modal'
+import { AiFillPanel } from '@/components/ai-fill-panel'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
@@ -35,6 +36,7 @@ export default function RootLayout({
           <SiteFooter />
           <CartDrawer />
           <WelcomeModal />
+          <AiFillPanel />
         </ShopProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

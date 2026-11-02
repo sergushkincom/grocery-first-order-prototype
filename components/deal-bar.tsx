@@ -57,7 +57,7 @@ function DeliveryInfo() {
 }
 
 function MinimumProgress() {
-  const { totals, fillWithAi } = useShop()
+  const { totals, suggestAiFill } = useShop()
   const credit = `${WELCOME_CREDIT.toLocaleString("de-DE")} € Guthaben`
 
   return (
@@ -83,7 +83,7 @@ function MinimumProgress() {
         {!totals.minReached && (
           <button
             type="button"
-            onClick={fillWithAi}
+            onClick={suggestAiFill}
             className="flex shrink-0 items-center gap-1 text-xs font-semibold text-secondary-foreground underline underline-offset-4 hover:text-foreground"
           >
             <Sparkles className="size-3.5" aria-hidden="true" />

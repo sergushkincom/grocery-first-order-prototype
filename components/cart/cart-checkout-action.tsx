@@ -7,7 +7,7 @@ import { formatEUR } from "@/lib/format"
 import { useShop } from "@/lib/shop-store"
 
 export function CartCheckoutAction() {
-  const { totals, setCartOpen, fillWithAi } = useShop()
+  const { totals, setCartOpen, suggestAiFill } = useShop()
   const empty = totals.itemCount === 0
   const blocked = empty || !totals.minReached
 
@@ -43,7 +43,7 @@ export function CartCheckoutAction() {
               </p>
               <button
                 type="button"
-                onClick={fillWithAi}
+                onClick={suggestAiFill}
                 className="mt-1 inline-flex items-center gap-1 font-semibold text-primary underline underline-offset-4"
               >
                 <Sparkles className="size-3.5" aria-hidden="true" />

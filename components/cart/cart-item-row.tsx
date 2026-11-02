@@ -1,14 +1,11 @@
 "use client"
 
 import Image from "next/image"
-import { Trash2 } from "lucide-react"
 import type { CartLine } from "@/lib/pricing"
 import { formatEUR } from "@/lib/format"
-import { useShop } from "@/lib/shop-store"
 import { QuantityStepper } from "@/components/quantity-stepper"
 
 export function CartItemRow({ line }: { line: CartLine }) {
-  const { setQuantity } = useShop()
   const { product } = line
 
   return (
@@ -30,17 +27,12 @@ export function CartItemRow({ line }: { line: CartLine }) {
             {formatEUR(line.lineCents)}
           </p>
         </div>
-        <div className="flex items-center justify-between">
-          <QuantityStepper productId={product.id} productName={product.name} variant="outline" className="h-9" />
-          <button
-            type="button"
-            onClick={() => setQuantity(product.id, 0)}
-            className="grid size-9 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
-            aria-label={`${product.name} aus dem Warenkorb entfernen`}
-          >
-            <Trash2 className="size-4" aria-hidden="true" />
-          </button>
-        </div>
+        <QuantityStepper
+          productId={product.id}
+          productName={product.name}
+          variant="outline"
+          className="h-9 self-start"
+        />
       </div>
     </li>
   )

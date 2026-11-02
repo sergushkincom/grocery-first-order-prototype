@@ -1,7 +1,8 @@
 "use client"
 
+import { useRef } from "react"
 import Image from "next/image"
-import { LayoutGrid } from "lucide-react"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import { CATEGORIES, type CategoryId } from "@/data/products"
 import { cn } from "@/lib/utils"
 
@@ -11,34 +12,57 @@ type CategoryTilesProps = {
 }
 
 export function CategoryTiles({ active, onSelect }: CategoryTilesProps) {
-  const tileClass = (selected: boolean) =>
-    cn(
-      "flex w-28 shrink-0 flex-col items-center gap-2 rounded-xl bg-card p-3 text-center text-xs font-semibold ring-1 transition-shadow hover:shadow-md sm:w-auto sm:text-sm",
-      selected ? "ring-2 ring-primary" : "ring-border",
-    )
+  const rowRef = useRef<HTMLUListElement>(null)
+  const scroll = (direction: 1 | -1) =>
+    rowRef.current?.scrollBy({ left: direction * rowRef.current.clientWidth * 0.8, behavior: "smooth" })
 
   return (
-    <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-4 sm:overflow-visible sm:px-0 lg:grid-cols-7">
-      <button type="button" aria-pressed={active === null} onClick={() => onSelect(null)} className={tileClass(active === null)}>
-        <span className="grid aspect-square w-full place-items-center rounded-lg bg-secondary text-secondary-foreground">
-          <LayoutGrid className="size-8" aria-hidden="true" />
-        </span>
-        Alle Produkte
-      </button>
-      {CATEGORIES.map((category) => (
-        <button
-          key={category.id}
-          type="button"
-          aria-pressed={active === category.id}
-          onClick={() => onSelect(active === category.id ? null : category.id)}
-          className={tileClass(active === category.id)}
-        >
-          <span className="relative aspect-square w-full overflow-hidden rounded-lg bg-background">
-            <Image src={category.image} alt="" fill sizes="160px" className="object-contain p-2" />
-          </span>
-          {category.label}
-        </button>
-      ))}
+    <div className="relative">
+      <ul
+        ref={rowRef}
+        className="-mx-4 flex snap-x gap-3 overflow-x-auto scroll-px-4 px-4 pb-2 sm:mx-0 sm:scroll-px-0 sm:px-0"
+      >
+        {CATEGORIES.map((category) => {
+          const selected = active === category.id
+          return (
+            <li key={category.id} className="snap-start">
+              <button
+                type="button"
+                aria-pressed={selected}
+                onClick={() => onSelect(selected ? null : category.id)}
+                className={cn(
+                  "flex w-28 flex-col items-center gap-2 rounded-xl bg-card p-2.5 text-center text-xs font-semibold ring-1 transition-shadow hover:shadow-md lg:w-32 lg:text-sm",
+                  selected ? "ring-2 ring-primary" : "ring-border",
+                )}
+              >
+                <span className="relative aspect-square w-full overflow-hidden rounded-lg bg-muted">
+                  <Image src={category.image} alt="" fill sizes="128px" className="object-contain p-2" />
+                </span>
+                <span className="line-clamp-2 min-h-[2lh] leading-tight">{category.label}</span>
+              </button>
+            </li>
+          )
+        })}
+      </ul>
+      <ScrollButton side="left" onClick={() => scroll(-1)} />
+      <ScrollButton side="right" onClick={() => scroll(1)} />
     </div>
+  )
+}
+
+function ScrollButton({ side, onClick }: { side: "left" | "right"; onClick: () => void }) {
+  const Icon = side === "left" ? ChevronLeft : ChevronRight
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={side === "left" ? "Kategorien zurück" : "Weitere Kategorien"}
+      className={cn(
+        "absolute top-[calc(50%-1.25rem)] hidden size-10 place-items-center rounded-full bg-card shadow-md ring-1 ring-border transition-colors hover:bg-muted md:grid",
+        side === "left" ? "-left-4" : "-right-4",
+      )}
+    >
+      <Icon className="size-5" aria-hidden="true" />
+    </button>
   )
 }

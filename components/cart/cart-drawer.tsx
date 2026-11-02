@@ -3,13 +3,15 @@
 import Link from "next/link"
 import { ShoppingBasket, Sparkles } from "lucide-react"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+import { formatEUR } from "@/lib/format"
 import { useShop } from "@/lib/shop-store"
 import { CartItemRow } from "@/components/cart/cart-item-row"
-import { CartSummary } from "@/components/cart/cart-summary"
-import { CartCheckoutAction } from "@/components/cart/cart-checkout-action"
+import { CartListActions } from "@/components/cart/cart-list-actions"
+import { MinimumProgress } from "@/components/deal-bar"
 
 export function CartDrawer() {
   const { cartOpen, setCartOpen, totals, aiFillAdded } = useShop()
+  const hasItems = totals.lines.length > 0
 
   return (
     <Sheet open={cartOpen} onOpenChange={setCartOpen}>
@@ -31,12 +33,15 @@ export function CartDrawer() {
         )}
 
         <div className="min-h-0 flex-1 overflow-y-auto px-4">
-          {totals.lines.length > 0 ? (
-            <ul className="divide-y">
-              {totals.lines.map((line) => (
-                <CartItemRow key={line.product.id} line={line} />
-              ))}
-            </ul>
+          {hasItems ? (
+            <>
+              <ul className="divide-y">
+                {totals.lines.map((line) => (
+                  <CartItemRow key={line.product.id} line={line} />
+                ))}
+              </ul>
+              <CartListActions className="border-t py-4" />
+            </>
           ) : (
             <div className="flex flex-col items-center gap-2 py-16 text-center text-muted-foreground">
               <ShoppingBasket className="size-10" aria-hidden="true" />
@@ -46,20 +51,27 @@ export function CartDrawer() {
           )}
         </div>
 
-        <div className="border-t bg-card p-4">
-          <CartSummary totals={totals}>
-            <CartCheckoutAction />
-          </CartSummary>
-          {totals.itemCount > 0 && (
-            <Link
-              href="/warenkorb"
-              onClick={() => setCartOpen(false)}
-              className="mt-3 block text-center text-sm font-semibold text-secondary-foreground underline underline-offset-4"
-            >
-              Warenkorb als Seite ansehen
-            </Link>
-          )}
-        </div>
+        {hasItems && (
+          <div className="border-t bg-card p-4">
+            <div className="flex flex-col gap-3 rounded-xl bg-summary p-4 text-sm text-summary-foreground">
+              <MinimumProgress tone="dark" live={false} />
+              <div className="flex items-center justify-between">
+                <span className="text-white/80">Warenwert</span>
+                <span className="font-semibold tabular-nums">
+                  {totals.hasWeighed ? "ca. " : ""}
+                  {formatEUR(totals.subtotalCents)}
+                </span>
+              </div>
+              <Link
+                href="/warenkorb"
+                onClick={() => setCartOpen(false)}
+                className="grid h-12 place-items-center rounded-lg bg-primary px-5 text-base font-bold text-primary-foreground transition-colors hover:bg-primary/90"
+              >
+                {"Weiter zum Warenkorb ›"}
+              </Link>
+            </div>
+          </div>
+        )}
       </SheetContent>
     </Sheet>
   )

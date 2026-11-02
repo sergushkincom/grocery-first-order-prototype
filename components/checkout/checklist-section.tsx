@@ -19,7 +19,7 @@ export function ChecklistSection({ id, title, icon: Icon, status, summary, error
     <section
       id={`section-${id}`}
       aria-labelledby={`section-${id}-title`}
-      className="scroll-mt-28 rounded-xl bg-card p-4 ring-1 ring-border sm:p-6"
+      className="scroll-mt-48 rounded-xl bg-card p-4 ring-1 ring-border sm:p-6"
     >
       <div className="mb-4 flex items-start gap-3">
         <span className="grid size-9 shrink-0 place-items-center rounded-full bg-muted text-foreground">

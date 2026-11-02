@@ -8,11 +8,10 @@ import { formatEUR } from "@/lib/format"
 import { useShop } from "@/lib/shop-store"
 import { cn } from "@/lib/utils"
 import { DealBar } from "@/components/deal-bar"
+import { AiAssistant, LanguageSwitch, LoginButton } from "@/components/header-actions"
+import { MainNav } from "@/components/main-nav"
 
 export function SiteHeader() {
-  const pathname = usePathname()
-  const showDealBar = pathname === "/" || pathname === "/warenkorb"
-
   return (
     <header className="sticky top-0 z-40 bg-card shadow-sm">
       <div className="mx-auto flex h-16 max-w-[1440px] items-center gap-4 px-4 lg:gap-8 lg:px-8">
@@ -26,12 +25,18 @@ export function SiteHeader() {
           <span className="sr-only">{SHOP_NAME} – Startseite</span>
         </Link>
         <SearchField className="hidden max-w-2xl flex-1 md:flex" />
-        <CartButton className="ml-auto" />
+        <div className="ml-auto flex items-center gap-1 sm:gap-2">
+          <AiAssistant />
+          <LanguageSwitch />
+          <LoginButton />
+          <CartButton />
+        </div>
       </div>
       <div className="px-4 pb-3 md:hidden">
         <SearchField />
       </div>
-      {showDealBar && <DealBar />}
+      <MainNav />
+      <DealBar />
     </header>
   )
 }

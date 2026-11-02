@@ -58,7 +58,7 @@ export function CartPageContent() {
             </Link>
           </section>
         )}
-        <CartSummary totals={totals} className="lg:sticky lg:top-44">
+        <CartSummary totals={totals} className="lg:sticky lg:top-48">
           <CartCheckoutAction />
         </CartSummary>
       </div>

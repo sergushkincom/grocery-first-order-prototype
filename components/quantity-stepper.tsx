@@ -3,18 +3,35 @@
 import { Minus, Plus, Trash2 } from "lucide-react"
 import { MAX_QTY_PER_ITEM } from "@/config"
 import { useShop } from "@/lib/shop-store"
+import { computeTotals } from "@/lib/pricing"
+import { showProgressToast } from "@/components/progress-toast"
 import { cn } from "@/lib/utils"
 
 type QuantityStepperProps = {
   productId: string
   productName: string
   variant?: "solid" | "outline"
+  /** Shows a short progress-to-minimum toast after each add. */
+  notifyOnAdd?: boolean
   className?: string
 }
 
-export function QuantityStepper({ productId, productName, variant = "solid", className }: QuantityStepperProps) {
-  const { cart, increment, decrement } = useShop()
+export function QuantityStepper({
+  productId,
+  productName,
+  variant = "solid",
+  notifyOnAdd = false,
+  className,
+}: QuantityStepperProps) {
+  const { cart, increment: addOne, decrement } = useShop()
   const qty = cart[productId] ?? 0
+
+  const increment = (id: string) => {
+    addOne(id)
+    if (notifyOnAdd && qty < MAX_QTY_PER_ITEM) {
+      showProgressToast(productName, computeTotals({ ...cart, [id]: qty + 1 }))
+    }
+  }
 
   if (qty === 0 && variant === "solid") {
     return (

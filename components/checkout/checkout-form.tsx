@@ -213,7 +213,7 @@ export function CheckoutForm() {
           </ChecklistSection>
         </div>
 
-        <aside id="bestellen" className="flex scroll-mt-28 flex-col gap-4 lg:sticky lg:top-24">
+        <aside id="bestellen" className="flex scroll-mt-48 flex-col gap-4 lg:sticky lg:top-44">
           <CheckoutChecklist steps={steps} />
           <CartSummary totals={totals} showReserveNote={reserves}>
             <button

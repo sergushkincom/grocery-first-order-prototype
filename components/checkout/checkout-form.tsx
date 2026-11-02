@@ -17,6 +17,7 @@ import { formatEUR } from "@/lib/format"
 import { useShop } from "@/lib/shop-store"
 import { cn } from "@/lib/utils"
 import { CartSummary } from "@/components/cart/cart-summary"
+import { MobileSummaryBar } from "@/components/cart/mobile-summary-bar"
 import { ChecklistSection } from "@/components/checkout/checklist-section"
 import { CheckoutChecklist, type ChecklistStep } from "@/components/checkout/checkout-checklist"
 import { CheckoutStepper } from "@/components/checkout/checkout-stepper"
@@ -165,7 +166,7 @@ export function CheckoutForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6">
+    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6 pb-28 lg:pb-0">
       <div>
         <Link
           href="/warenkorb"
@@ -215,7 +216,7 @@ export function CheckoutForm() {
 
         <aside id="bestellen" className="flex scroll-mt-48 flex-col gap-4 lg:sticky lg:top-44">
           <CheckoutChecklist steps={steps} />
-          <CartSummary totals={totals} showReserveNote={reserves}>
+          <CartSummary totals={totals} showReserveNote={reserves} className="hidden lg:block">
             <button
               id="bestellen-button"
               type="submit"
@@ -235,6 +236,27 @@ export function CheckoutForm() {
           </CartSummary>
         </aside>
       </div>
+
+      <MobileSummaryBar
+        totals={totals}
+        showReserveNote={reserves}
+        action={
+          <button
+            type="submit"
+            aria-disabled={!ready}
+            className={cn(
+              "h-12 w-full rounded-lg px-3 text-sm font-bold transition-colors",
+              ready
+                ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                : "cursor-not-allowed bg-white/15 text-white/70",
+            )}
+          >
+            {ready
+              ? "Kostenpflichtig bestellen"
+              : `Noch ${missing.length} ${missing.length === 1 ? "Schritt" : "Schritte"} offen`}
+          </button>
+        }
+      />
     </form>
   )
 }

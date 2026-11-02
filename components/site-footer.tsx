@@ -7,7 +7,7 @@ export function SiteFooter() {
         <p>
           {SHOP_NAME} · Klickbarer Prototyp mit Beispieldaten, keine echten Bestellungen oder Zahlungen.
         </p>
-        <p>Design prototype</p>
+        <p>Prototype — for demonstration only</p>
       </div>
     </footer>
   )

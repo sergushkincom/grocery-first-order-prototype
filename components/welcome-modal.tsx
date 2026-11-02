@@ -9,6 +9,11 @@ import { useShop } from "@/lib/shop-store"
 
 const euro = (value: number) => `${value.toLocaleString("de-DE")} €`
 
+const TEST_POSTCODES = [
+  { code: "80331", label: "Liefergebiet" },
+  { code: "10115", label: "kein Liefergebiet" },
+]
+
 export function WelcomeModal() {
   const { welcomeOpen, setWelcomeOpen, postcode, deliveryStatus, checkPostcode } = useShop()
   const [value, setValue] = useState(postcode ?? "")
@@ -18,9 +23,8 @@ export function WelcomeModal() {
   const showResult = !editing && deliveryStatus !== "unknown"
   const close = () => setWelcomeOpen(false)
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const trimmed = value.trim()
+  function runCheck(code: string) {
+    const trimmed = code.trim()
     if (!isValidPostcodeFormat(trimmed)) {
       setError("Bitte gib eine 5-stellige Postleitzahl ein, z. B. 80331.")
       return
@@ -28,6 +32,16 @@ export function WelcomeModal() {
     setError(null)
     checkPostcode(trimmed)
     setEditing(false)
+  }
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    runCheck(value)
+  }
+
+  function applyTestPostcode(code: string) {
+    setValue(code)
+    runCheck(code)
   }
 
   return (
@@ -79,6 +93,20 @@ export function WelcomeModal() {
                   className="h-12 w-full rounded-lg border border-input bg-card pl-9 pr-3 text-base outline-none focus:border-primary focus:ring-3 focus:ring-primary/20 aria-invalid:border-destructive aria-invalid:ring-destructive/20"
                 />
               </div>
+              <p className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
+                Zum Testen:
+                {TEST_POSTCODES.map(({ code, label }) => (
+                  <button
+                    key={code}
+                    type="button"
+                    onClick={() => applyTestPostcode(code)}
+                    aria-label={`${code} eintragen und prüfen (${label})`}
+                    className="rounded-full border border-input bg-muted px-2 py-0.5 font-mono font-semibold text-foreground transition-colors hover:border-primary hover:bg-primary/10"
+                  >
+                    {code}
+                  </button>
+                ))}
+              </p>
               {error && (
                 <p id="welcome-postcode-error" className="text-sm text-destructive">
                   {error}

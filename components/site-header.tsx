@@ -8,18 +8,18 @@ import { formatEUR } from "@/lib/format"
 import { useShop } from "@/lib/shop-store"
 import { cn } from "@/lib/utils"
 import { DealBar } from "@/components/deal-bar"
-import { AiAssistant, LanguageSwitch, LoginButton } from "@/components/header-actions"
+import { AiAssistant, LanguageSwitch, LoginButton, MobileMenu } from "@/components/header-actions"
 import { MainNav } from "@/components/main-nav"
 
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 bg-card shadow-sm">
-      <div className="mx-auto flex h-16 max-w-[1440px] items-center gap-4 px-4 lg:gap-8 lg:px-8">
+      <div className="mx-auto flex h-16 max-w-[1440px] items-center gap-2 px-4 sm:gap-4 lg:gap-8 lg:px-8">
         <Link href="/" className="flex shrink-0 items-center gap-2 rounded-md font-bold tracking-tight">
           <span className="grid size-9 place-items-center rounded-lg bg-primary text-primary-foreground">
             <Leaf className="size-5" aria-hidden="true" />
           </span>
-          <span className="text-lg leading-none">
+          <span className="hidden text-lg leading-none sm:inline" aria-hidden="true">
             Grocery<span className="text-primary">Prototype</span>
           </span>
           <span className="sr-only">{SHOP_NAME} – Startseite</span>
@@ -28,6 +28,7 @@ export function SiteHeader() {
         <div className="ml-auto flex items-center gap-1 sm:gap-2">
           <AiAssistant />
           <LanguageSwitch />
+          <MobileMenu />
           <LoginButton />
           <CartButton />
         </div>
@@ -87,7 +88,7 @@ function CartButton({ className }: { className?: string }) {
       onClick={() => setCartOpen(true)}
       aria-label={`Warenkorb öffnen, ${totals.itemCount} Artikel, ${formatEUR(totals.goodsWithPfandCents)}`}
       className={cn(
-        "flex h-11 items-center gap-2 rounded-lg bg-primary px-3 font-semibold text-primary-foreground transition-colors hover:bg-primary/90 sm:px-4",
+        "flex h-11 shrink-0 items-center gap-2 rounded-lg bg-primary px-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 sm:px-4 sm:text-base",
         className,
       )}
     >
@@ -99,7 +100,16 @@ function CartButton({ className }: { className?: string }) {
           </span>
         )}
       </span>
-      <span className="tabular-nums">{hasItems ? formatEUR(totals.goodsWithPfandCents) : "Warenkorb"}</span>
+      <span className="tabular-nums" aria-hidden="true">
+        {hasItems ? (
+          formatEUR(totals.goodsWithPfandCents)
+        ) : (
+          <>
+            <span className="sm:hidden">{formatEUR(0)}</span>
+            <span className="hidden sm:inline">Warenkorb</span>
+          </>
+        )}
+      </span>
     </button>
   )
 }

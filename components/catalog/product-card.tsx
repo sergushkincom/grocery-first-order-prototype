@@ -3,6 +3,20 @@ import type { Product } from "@/data/products"
 import { formatEUR, toCents } from "@/lib/format"
 import { Price } from "@/components/price"
 import { QuantityStepper } from "@/components/quantity-stepper"
+import { cn } from "@/lib/utils"
+
+function DiscountPill({ label, className }: { label: string; className?: string }) {
+  return (
+    <span
+      className={cn(
+        "inline-flex h-5 items-center whitespace-nowrap rounded-full bg-destructive px-2 text-[0.6875rem] font-bold leading-none text-white sm:text-xs",
+        className,
+      )}
+    >
+      {label}
+    </span>
+  )
+}
 
 export function ProductCard({ product }: { product: Product }) {
   const title = `${product.name}, ${product.amount}`
@@ -35,22 +49,21 @@ export function ProductCard({ product }: { product: Product }) {
           {product.unitPrice}
           {product.pfand ? ` · zzgl. ${formatEUR(toCents(product.pfand))} Pfand` : ""}
         </p>
-        <div className="mt-auto flex items-end justify-between gap-2 pt-3">
-          <div className="flex flex-col items-start gap-1">
-            {product.oldPrice && (
-              <s className="text-xs text-muted-foreground">
-                <span className="sr-only">Statt </span>
-                {formatEUR(toCents(product.oldPrice))}
-              </s>
-            )}
-            <Price cents={toCents(product.price)} className={product.oldPrice ? "text-destructive" : undefined} />
-            {product.discountLabel && (
-              <span className="rounded-full bg-destructive px-2 py-0.5 text-xs font-bold text-white">
-                {product.discountLabel}
-              </span>
-            )}
+        <div className="mt-auto pt-3">
+          {product.discountLabel && <DiscountPill label={product.discountLabel} className="mb-1.5 sm:hidden" />}
+          <div className="flex items-end justify-between gap-2">
+            <div className="flex min-w-0 flex-col items-start gap-1">
+              {product.oldPrice && (
+                <s className="text-xs text-muted-foreground">
+                  <span className="sr-only">Statt </span>
+                  {formatEUR(toCents(product.oldPrice))}
+                </s>
+              )}
+              <Price cents={toCents(product.price)} className={product.oldPrice ? "text-destructive" : undefined} />
+              {product.discountLabel && <DiscountPill label={product.discountLabel} className="hidden sm:inline-flex" />}
+            </div>
+            <QuantityStepper productId={product.id} productName={product.name} notifyOnAdd />
           </div>
-          <QuantityStepper productId={product.id} productName={product.name} notifyOnAdd />
         </div>
       </div>
     </article>

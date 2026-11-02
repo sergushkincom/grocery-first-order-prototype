@@ -48,7 +48,7 @@ export function WelcomeModal() {
             {euro(WELCOME_CREDIT)} Startguthaben
           </DialogTitle>
           <DialogDescription className="mt-1 text-sm text-primary-foreground/90">
-            Mindestbestellwert 20 €. Deine erste Lieferung ist gratis. Prüfe kurz, ob wir zu dir liefern.
+            Mindestbestellwert {euro(MIN_ORDER)}. Deine erste Lieferung ist gratis. Prüfe kurz, ob wir zu dir liefern.
           </DialogDescription>
         </div>
 

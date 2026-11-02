@@ -1,6 +1,6 @@
 "use client"
 
-import { Minus, Plus } from "lucide-react"
+import { Minus, Plus, Trash2 } from "lucide-react"
 import { MAX_QTY_PER_ITEM } from "@/config"
 import { useShop } from "@/lib/shop-store"
 import { cn } from "@/lib/utils"
@@ -49,7 +49,11 @@ export function QuantityStepper({ productId, productName, variant = "solid", cla
         aria-label={qty === 1 ? `${productName} entfernen` : `${productName}: eins weniger`}
         className={cn("grid h-full w-9 place-items-center rounded-l-lg", solid ? "hover:bg-black/10" : "hover:bg-muted")}
       >
-        <Minus className="size-4" strokeWidth={2.5} aria-hidden="true" />
+        {qty === 1 ? (
+          <Trash2 className="size-4" strokeWidth={2.25} aria-hidden="true" />
+        ) : (
+          <Minus className="size-4" strokeWidth={2.5} aria-hidden="true" />
+        )}
       </button>
       <span className="min-w-6 text-center text-sm font-bold tabular-nums" aria-live="polite">
         {qty}

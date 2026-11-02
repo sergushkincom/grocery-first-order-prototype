@@ -57,28 +57,42 @@ function DeliveryInfo() {
 }
 
 /** `live` is off for secondary copies so screen readers don't announce the same change twice. */
-export function MinimumProgress({ className, live = true }: { className?: string; live?: boolean }) {
+export function MinimumProgress({
+  className,
+  live = true,
+  tone = "light",
+}: {
+  className?: string
+  live?: boolean
+  tone?: "light" | "dark"
+}) {
   const { totals, suggestAiFill } = useShop()
   const credit = `${WELCOME_CREDIT.toLocaleString("de-DE")} € Guthaben`
+  const dark = tone === "dark"
+  const textClass = dark ? undefined : "truncate"
 
   return (
     <div className={cn("flex flex-col gap-2", className)}>
-      <div className="flex items-center justify-between gap-3">
+      <div className={cn("flex justify-between gap-3", dark ? "items-start" : "items-center")}>
         <p
-          className={cn("flex min-w-0 items-center gap-1.5", totals.minReached && "text-success")}
+          className={cn(
+            "flex min-w-0 gap-1.5",
+            dark ? "items-start" : "items-center",
+            totals.minReached && (dark ? "text-[#8fd19e]" : "text-success"),
+          )}
           aria-live={live ? "polite" : undefined}
         >
           {totals.minReached ? (
-            <CircleCheck className="size-4 shrink-0" aria-hidden="true" />
+            <CircleCheck className={cn("size-4 shrink-0", dark && "mt-0.5")} aria-hidden="true" />
           ) : (
-            <Truck className="size-4 shrink-0 text-primary" aria-hidden="true" />
+            <Truck className={cn("size-4 shrink-0 text-primary", dark && "mt-0.5")} aria-hidden="true" />
           )}
           {totals.minReached ? (
-            <span className="truncate">
+            <span className={textClass}>
               <strong>Mindestbestellwert erreicht</strong> – erste Lieferung gratis + {credit}
             </span>
           ) : (
-            <span className="truncate">
+            <span className={textClass}>
               <strong className="tabular-nums">Noch {formatEUR(totals.remainingCents)}</strong> bis{" "}
               {`${MIN_ORDER.toLocaleString("de-DE")} €`} Mindestbestellwert · erste Lieferung gratis
             </span>
@@ -88,7 +102,10 @@ export function MinimumProgress({ className, live = true }: { className?: string
           <button
             type="button"
             onClick={suggestAiFill}
-            className="flex shrink-0 items-center gap-1 text-xs font-semibold text-secondary-foreground underline underline-offset-4 hover:text-foreground"
+            className={cn(
+              "flex shrink-0 items-center gap-1 text-xs font-semibold underline underline-offset-4",
+              dark ? "mt-0.5 text-primary hover:text-primary/80" : "text-secondary-foreground hover:text-foreground",
+            )}
           >
             <Sparkles className="size-3.5" aria-hidden="true" />
             Mit KI auffüllen
@@ -101,7 +118,7 @@ export function MinimumProgress({ className, live = true }: { className?: string
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={Math.round(totals.progress * 100)}
-        className="h-[6px] overflow-hidden rounded-full bg-neutral-300"
+        className={cn("h-[6px] overflow-hidden rounded-full", dark ? "bg-white/25" : "bg-neutral-300")}
       >
         <div
           className="h-full rounded-full bg-primary transition-all duration-300"

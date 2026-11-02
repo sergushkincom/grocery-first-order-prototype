@@ -1,6 +1,7 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
+import { Toaster } from 'sonner'
 import { ShopProvider } from '@/lib/shop-store'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
@@ -38,6 +39,8 @@ export default function RootLayout({
           <WelcomeModal />
           <AiFillPanel />
         </ShopProvider>
+        <Toaster position="bottom-center" style={{ fontFamily: 'inherit' }} />
+
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

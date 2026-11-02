@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google'
 import { Toaster } from 'sonner'
 import { ShopProvider } from '@/lib/shop-store'
 import { SiteHeader } from '@/components/site-header'
+import { PromoStrip } from '@/components/promo-strip'
 import { SiteFooter } from '@/components/site-footer'
 import { CartDrawer } from '@/components/cart/cart-drawer'
 import { WelcomeModal } from '@/components/welcome-modal'
@@ -32,6 +33,7 @@ export default function RootLayout({
     <html lang="de" className={inter.variable}>
       <body className="flex min-h-dvh flex-col antialiased">
         <ShopProvider>
+          <PromoStrip />
           <SiteHeader />
           <main className="flex-1">{children}</main>
           <SiteFooter />

@@ -1,20 +1,37 @@
 "use client"
 
-import { Minus, Plus } from "lucide-react"
+import { Minus, Plus, Trash2 } from "lucide-react"
 import { MAX_QTY_PER_ITEM } from "@/config"
 import { useShop } from "@/lib/shop-store"
+import { computeTotals } from "@/lib/pricing"
+import { showProgressToast } from "@/components/progress-toast"
 import { cn } from "@/lib/utils"
 
 type QuantityStepperProps = {
   productId: string
   productName: string
   variant?: "solid" | "outline"
+  /** Shows a short progress-to-minimum toast after each add. */
+  notifyOnAdd?: boolean
   className?: string
 }
 
-export function QuantityStepper({ productId, productName, variant = "solid", className }: QuantityStepperProps) {
-  const { cart, increment, decrement } = useShop()
+export function QuantityStepper({
+  productId,
+  productName,
+  variant = "solid",
+  notifyOnAdd = false,
+  className,
+}: QuantityStepperProps) {
+  const { cart, increment: addOne, decrement } = useShop()
   const qty = cart[productId] ?? 0
+
+  const increment = (id: string) => {
+    addOne(id)
+    if (notifyOnAdd && qty < MAX_QTY_PER_ITEM) {
+      showProgressToast(productName, computeTotals({ ...cart, [id]: qty + 1 }))
+    }
+  }
 
   if (qty === 0 && variant === "solid") {
     return (
@@ -49,7 +66,11 @@ export function QuantityStepper({ productId, productName, variant = "solid", cla
         aria-label={qty === 1 ? `${productName} entfernen` : `${productName}: eins weniger`}
         className={cn("grid h-full w-9 place-items-center rounded-l-lg", solid ? "hover:bg-black/10" : "hover:bg-muted")}
       >
-        <Minus className="size-4" strokeWidth={2.5} aria-hidden="true" />
+        {qty === 1 ? (
+          <Trash2 className="size-4" strokeWidth={2.25} aria-hidden="true" />
+        ) : (
+          <Minus className="size-4" strokeWidth={2.5} aria-hidden="true" />
+        )}
       </button>
       <span className="min-w-6 text-center text-sm font-bold tabular-nums" aria-live="polite">
         {qty}

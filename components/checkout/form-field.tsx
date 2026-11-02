@@ -15,6 +15,15 @@ type FormFieldProps = {
   className?: string
 } & Pick<React.ComponentProps<"input">, "autoComplete" | "inputMode" | "type" | "maxLength" | "placeholder">
 
+export function FieldError({ id, message, className }: { id: string; message: string; className?: string }) {
+  return (
+    <p id={id} role="alert" className={cn("flex items-start gap-1 text-xs font-medium text-destructive", className)}>
+      <CircleAlert className="mt-px size-3.5 shrink-0" aria-hidden="true" />
+      {message}
+    </p>
+  )
+}
+
 export function FormField({ id, label, value, onChange, onBlur, error, className, ...inputProps }: FormFieldProps) {
   const errorId = `${id}-error`
   return (
@@ -29,15 +38,13 @@ export function FormField({ id, label, value, onChange, onBlur, error, className
         onBlur={onBlur}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? errorId : undefined}
-        className="h-11 bg-card text-base md:text-sm"
+        className={cn(
+          "h-11 bg-card text-base md:text-sm focus-visible:border-foreground focus-visible:ring-foreground/15",
+          error && "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20",
+        )}
         {...inputProps}
       />
-      {error && (
-        <p id={errorId} className="flex items-start gap-1 text-xs text-destructive">
-          <CircleAlert className="mt-px size-3.5 shrink-0" aria-hidden="true" />
-          {error}
-        </p>
-      )}
+      {error && <FieldError id={errorId} message={error} />}
     </div>
   )
 }

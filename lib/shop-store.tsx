@@ -27,6 +27,7 @@ type ShopContextValue = {
   setQuantity: (id: string, qty: number) => void
   increment: (id: string) => void
   decrement: (id: string) => void
+  clearCart: () => void
   postcode: string | null
   deliveryStatus: DeliveryStatus
   checkPostcode: (postcode: string) => DeliveryStatus
@@ -37,7 +38,10 @@ type ShopContextValue = {
   search: string
   setSearch: (value: string) => void
   aiFillAdded: string[] | null
-  fillWithAi: () => void
+  aiSuggestion: string[] | null
+  suggestAiFill: () => void
+  confirmAiFill: (productIds: string[]) => void
+  cancelAiFill: () => void
   lastOrder: PlacedOrder | null
   placeOrder: (order: PlacedOrder) => void
 }
@@ -51,6 +55,7 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
   const [cartOpen, setCartOpenState] = useState(false)
   const [search, setSearch] = useState("")
   const [aiFillAdded, setAiFillAdded] = useState<string[] | null>(null)
+  const [aiSuggestion, setAiSuggestion] = useState<string[] | null>(null)
   const [lastOrder, setLastOrder] = useState<PlacedOrder | null>(null)
 
   const totals = useMemo(() => computeTotals(cart), [cart])
@@ -81,6 +86,11 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
     })
   }, [])
 
+  const clearCart = useCallback(() => {
+    setCart({})
+    setAiFillAdded(null)
+  }, [])
+
   const checkPostcode = useCallback((value: string) => {
     setPostcode(value)
     return isDeliverablePostcode(value) ? "deliverable" : "not-deliverable"
@@ -91,18 +101,30 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
     if (!open) setAiFillAdded(null)
   }, [])
 
-  const fillWithAi = useCallback(() => {
+  const suggestAiFill = useCallback(() => {
     const picks = pickAiFill(cart)
-    if (picks.length === 0) return
-    setCart((prev) => {
-      const next = { ...prev }
-      for (const id of picks) next[id] = Math.min((next[id] ?? 0) + 1, MAX_QTY_PER_ITEM)
-      return next
-    })
-    const names = [...new Set(picks)].map((id) => getProduct(id)?.name ?? id)
-    setAiFillAdded(names)
-    setCartOpenState(true)
+    if (picks.length > 0) setAiSuggestion(picks)
   }, [cart])
+
+  const confirmAiFill = useCallback(
+    (productIds: string[]) => {
+      const selected = new Set(productIds)
+      const picks = (aiSuggestion ?? []).filter((id) => selected.has(id))
+      setAiSuggestion(null)
+      if (picks.length === 0) return
+      setCart((prev) => {
+        const next = { ...prev }
+        for (const id of picks) next[id] = Math.min((next[id] ?? 0) + 1, MAX_QTY_PER_ITEM)
+        return next
+      })
+      const names = [...new Set(picks)].map((id) => getProduct(id)?.name ?? id)
+      setAiFillAdded(names)
+      setCartOpenState(true)
+    },
+    [aiSuggestion],
+  )
+
+  const cancelAiFill = useCallback(() => setAiSuggestion(null), [])
 
   const placeOrder = useCallback((order: PlacedOrder) => {
     setLastOrder(order)
@@ -115,6 +137,7 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
     setQuantity,
     increment,
     decrement,
+    clearCart,
     postcode,
     deliveryStatus,
     checkPostcode,
@@ -125,7 +148,10 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
     search,
     setSearch,
     aiFillAdded,
-    fillWithAi,
+    aiSuggestion,
+    suggestAiFill,
+    confirmAiFill,
+    cancelAiFill,
     lastOrder,
     placeOrder,
   }

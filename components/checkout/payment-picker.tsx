@@ -17,11 +17,16 @@ const GROUPS: PaymentMethod["group"][] = ["Online", "PayPal", "Bei Lieferung"]
 type PaymentPickerProps = {
   value: PaymentMethodId | null
   onChange: (id: PaymentMethodId) => void
+  invalid?: boolean
 }
 
-export function PaymentPicker({ value, onChange }: PaymentPickerProps) {
+export function PaymentPicker({ value, onChange, invalid }: PaymentPickerProps) {
   return (
-    <fieldset className="flex flex-col gap-4">
+    <fieldset
+      className="flex flex-col gap-4"
+      aria-invalid={invalid || undefined}
+      aria-describedby={invalid ? "section-zahlung-error" : undefined}
+    >
       <legend className="sr-only">Zahlungsart wählen</legend>
       {GROUPS.map((group) => (
         <div key={group}>
@@ -32,7 +37,8 @@ export function PaymentPicker({ value, onChange }: PaymentPickerProps) {
               return (
                 <label
                   key={method.id}
-                  className="flex cursor-pointer items-center gap-3 rounded-lg border border-input bg-card p-3 text-sm transition-colors hover:border-primary has-[:checked]:border-primary has-[:checked]:bg-secondary has-[:checked]:ring-1 has-[:checked]:ring-primary has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-primary"
+                  className="flex cursor-pointer items-center gap-3 rounded-lg border border-input bg-card p-3 text-sm transition-colors hover:border-foreground/50 has-[:checked]:border-foreground has-[:checked]:bg-muted has-[:checked]:ring-1 has-[:checked]:ring-foreground has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-foreground data-[invalid]:border-destructive"
+                  data-invalid={invalid || undefined}
                 >
                   <input
                     type="radio"
@@ -40,7 +46,7 @@ export function PaymentPicker({ value, onChange }: PaymentPickerProps) {
                     value={method.id}
                     checked={value === method.id}
                     onChange={() => onChange(method.id)}
-                    className="size-4 accent-primary"
+                    className="size-4 accent-foreground"
                   />
                   <Icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
                   <span className="flex flex-col">

@@ -32,7 +32,18 @@ export function HomeCatalog() {
           <h2 id="products-title" className="text-lg font-bold">
             {heading}
           </h2>
-          <span className="text-sm text-muted-foreground">{products.length} Produkte</span>
+          <span className="flex items-baseline gap-3 text-sm text-muted-foreground">
+            {products.length} Produkte
+            {category !== null && (
+              <button
+                type="button"
+                onClick={() => setCategory(null)}
+                className="font-semibold text-secondary-foreground underline underline-offset-4 hover:text-foreground"
+              >
+                Alle Produkte
+              </button>
+            )}
+          </span>
         </div>
         {products.length > 0 ? (
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">

@@ -2,7 +2,7 @@
 
 A clickable prototype of a first-order flow for an online grocery shop in Germany. Mock data only — no real orders or payments. Not affiliated with any real shop.
 
-**Live:** https://grocery-first-order-prototype.vercel.app
+**Live:** https://grocery-first-order-prototype.vercel.app — works on desktop and mobile. To test delivery, tap the "80331" hint in the first window.
 
 ## The idea
 
@@ -17,7 +17,7 @@ New customers build a cart before they know the deal: the minimum order, the del
 
 ## How it was built
 
-Generated with v0 from one prompt, then reviewed round by round. Each commit after the first is one review round; pull request #1 sums them up.
+Generated with v0 from one prompt, then reviewed round by round. Each commit after the first is one review round; pull requests #1–#3 sum them up.
 
 Deliberately not built: quantity discounts and an upsell window before checkout.
 

@@ -17,10 +17,10 @@ export function CategoryTiles({ active, onSelect }: CategoryTilesProps) {
     rowRef.current?.scrollBy({ left: direction * rowRef.current.clientWidth * 0.8, behavior: "smooth" })
 
   return (
-    <div className="relative">
+    <div className="relative min-w-0 max-w-full">
       <ul
         ref={rowRef}
-        className="-mx-4 flex snap-x gap-3 overflow-x-auto scroll-px-4 px-4 pb-2 sm:mx-0 sm:scroll-px-0 sm:px-0"
+        className="-mx-4 flex max-w-[calc(100%+2rem)] snap-x gap-3 overflow-x-auto scroll-px-4 px-4 pb-2 sm:mx-0 sm:scroll-px-0 sm:px-0"
       >
         {CATEGORIES.map((category) => {
           const selected = active === category.id

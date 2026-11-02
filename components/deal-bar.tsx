@@ -1,7 +1,7 @@
 "use client"
 
 import { CircleCheck, Clock, MapPin, Sparkles, Truck } from "lucide-react"
-import { DELIVERY_CITY, NEXT_SLOT, WELCOME_CREDIT } from "@/config"
+import { DELIVERY_CITY, MIN_ORDER, NEXT_SLOT, WELCOME_CREDIT } from "@/config"
 import { formatEUR } from "@/lib/format"
 import { useShop } from "@/lib/shop-store"
 import { cn } from "@/lib/utils"
@@ -61,22 +61,25 @@ function MinimumProgress() {
   const credit = `${WELCOME_CREDIT.toLocaleString("de-DE")} € Guthaben`
 
   return (
-    <div className="flex flex-col gap-1.5 md:min-w-[28rem] md:max-w-xl md:flex-1">
-      <div className="flex items-start justify-between gap-3">
-        <p className={cn("flex items-start gap-1.5", totals.minReached && "text-success")} aria-live="polite">
+    <div className="flex flex-col gap-2 md:min-w-[30rem] md:max-w-2xl md:flex-1">
+      <div className="flex items-center justify-between gap-3">
+        <p
+          className={cn("flex min-w-0 items-center gap-1.5", totals.minReached && "text-success")}
+          aria-live="polite"
+        >
           {totals.minReached ? (
-            <CircleCheck className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+            <CircleCheck className="size-4 shrink-0" aria-hidden="true" />
           ) : (
-            <Truck className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
+            <Truck className="size-4 shrink-0 text-primary" aria-hidden="true" />
           )}
           {totals.minReached ? (
-            <span>
+            <span className="truncate">
               <strong>Mindestbestellwert erreicht</strong> – erste Lieferung gratis + {credit}
             </span>
           ) : (
-            <span>
-              <strong className="tabular-nums">Noch {formatEUR(totals.remainingCents)}</strong> bis zum
-              Mindestbestellwert – dann erste Lieferung gratis + {credit}
+            <span className="truncate">
+              <strong className="tabular-nums">Noch {formatEUR(totals.remainingCents)}</strong> bis{" "}
+              {`${MIN_ORDER.toLocaleString("de-DE")} €`} Mindestbestellwert · erste Lieferung gratis
             </span>
           )}
         </p>
@@ -97,10 +100,10 @@ function MinimumProgress() {
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={Math.round(totals.progress * 100)}
-        className="h-1.5 overflow-hidden rounded-full bg-black/10"
+        className="h-[6px] overflow-hidden rounded-full bg-neutral-300"
       >
         <div
-          className={cn("h-full rounded-full transition-all duration-300", totals.minReached ? "bg-success" : "bg-primary")}
+          className="h-full rounded-full bg-primary transition-all duration-300"
           style={{ width: `${totals.progress * 100}%` }}
         />
       </div>

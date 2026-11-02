@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { ArrowLeft, Lock } from "lucide-react"
+import { ArrowLeft, Clock, CreditCard, Lock, MapPin, UserRound } from "lucide-react"
 import { DELIVERY_CITY, DELIVERY_SLOTS, MIN_ORDER, PAYMENT_METHODS, type PaymentMethodId } from "@/config"
 import {
   validateAddress,
@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils"
 import { CartSummary } from "@/components/cart/cart-summary"
 import { ChecklistSection } from "@/components/checkout/checklist-section"
 import { CheckoutChecklist, type ChecklistStep } from "@/components/checkout/checkout-checklist"
+import { CheckoutStepper } from "@/components/checkout/checkout-stepper"
 import { FormField } from "@/components/checkout/form-field"
 import { PaymentPicker } from "@/components/checkout/payment-picker"
 import { SlotPicker } from "@/components/checkout/slot-picker"
@@ -70,9 +71,6 @@ export function CheckoutForm() {
     return keys.some((k) => shown(errors, prefix, k)) ? "error" : "open"
   }
 
-  const firstShown = <T,>(errors: FieldErrors<T>, prefix: string) =>
-    (Object.keys(errors) as (keyof T)[]).map((k) => shown(errors, prefix, k)).find(Boolean)
-
   const selectedSlot = DELIVERY_SLOTS.find((s) => s.id === slotId)
   const selectedPayment = PAYMENT_METHODS.find((m) => m.id === payment)
 
@@ -113,6 +111,20 @@ export function CheckoutForm() {
 
   const missing = steps.filter((s) => s.status !== "done")
   const ready = missing.length === 0
+  const isDone = (id: string) => steps.find((s) => s.id === id)?.status === "done"
+  const addressStepTarget = isDone("adresse") ? "kontakt" : "adresse"
+  const stepperSteps = [
+    { label: "Warenkorb", done: true, href: "/warenkorb" },
+    {
+      label: "Adresse",
+      done: isDone("adresse") && isDone("kontakt"),
+      targetId: `section-${addressStepTarget}`,
+      focusId: `section-${addressStepTarget}-title`,
+    },
+    { label: "Lieferzeit", done: isDone("lieferzeit"), targetId: "section-lieferzeit", focusId: "section-lieferzeit-title" },
+    { label: "Zahlung", done: isDone("zahlung"), targetId: "section-zahlung", focusId: "section-zahlung-title" },
+    { label: "Bestellen", done: false, targetId: "bestellen", focusId: "bestellen-button" },
+  ]
   const approx = totals.hasWeighed ? "ca. " : ""
   const buttonLabel = ready
     ? `Kostenpflichtig bestellen – ${approx}${formatEUR(totals.totalCents)}`
@@ -166,9 +178,11 @@ export function CheckoutForm() {
         <p className="mt-1 text-sm text-muted-foreground">Vier Schritte auf einer Seite – alles, was fehlt, siehst du sofort.</p>
       </div>
 
+      <CheckoutStepper steps={stepperSteps} />
+
       <div className="grid items-start gap-6 lg:grid-cols-[1fr_400px]">
         <div className="flex flex-col gap-4">
-          <ChecklistSection id="adresse" index={1} title="Lieferadresse" status={steps[0].status} errorText={firstShown(addressErrors, "address")}>
+          <ChecklistSection id="adresse" icon={MapPin} title="Lieferadresse" status={steps[0].status} summary={steps[0].summary}>
             <div className="grid grid-cols-6 gap-3">
               <FormField id="street" label="Straße" autoComplete="address-line1" className="col-span-4" value={address.street} onChange={updateAddress("street")} onBlur={() => touch("address.street")} error={shown(addressErrors, "address", "street")} />
               <FormField id="number" label="Hausnr." className="col-span-2" value={address.number} onChange={updateAddress("number")} onBlur={() => touch("address.number")} error={shown(addressErrors, "address", "number")} />
@@ -177,7 +191,7 @@ export function CheckoutForm() {
             </div>
           </ChecklistSection>
 
-          <ChecklistSection id="kontakt" index={2} title="Kontakt" status={steps[1].status} errorText={firstShown(contactErrors, "contact")}>
+          <ChecklistSection id="kontakt" icon={UserRound} title="Kontakt" status={steps[1].status} summary={steps[1].summary}>
             <div className="grid gap-3 sm:grid-cols-2">
               <FormField id="firstName" label="Vorname" autoComplete="given-name" value={contact.firstName} onChange={updateContact("firstName")} onBlur={() => touch("contact.firstName")} error={shown(contactErrors, "contact", "firstName")} />
               <FormField id="lastName" label="Nachname" autoComplete="family-name" value={contact.lastName} onChange={updateContact("lastName")} onBlur={() => touch("contact.lastName")} error={shown(contactErrors, "contact", "lastName")} />
@@ -186,12 +200,12 @@ export function CheckoutForm() {
             </div>
           </ChecklistSection>
 
-          <ChecklistSection id="lieferzeit" index={3} title="Lieferzeit" status={steps[2].status} errorText="Bitte wähle eine Lieferzeit.">
-            <SlotPicker value={slotId} onChange={setSlotId} />
+          <ChecklistSection id="lieferzeit" icon={Clock} title="Lieferzeit" status={steps[2].status} summary={steps[2].summary} errorText="Bitte wähle eine Lieferzeit.">
+            <SlotPicker value={slotId} onChange={setSlotId} invalid={steps[2].status === "error"} />
           </ChecklistSection>
 
-          <ChecklistSection id="zahlung" index={4} title="Zahlung" status={steps[3].status} errorText="Bitte wähle eine Zahlungsart.">
-            <PaymentPicker value={payment} onChange={setPayment} />
+          <ChecklistSection id="zahlung" icon={CreditCard} title="Zahlung" status={steps[3].status} summary={steps[3].summary} errorText="Bitte wähle eine Zahlungsart.">
+            <PaymentPicker value={payment} onChange={setPayment} invalid={steps[3].status === "error"} />
             <p className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
               <Lock className="size-3.5" aria-hidden="true" />
               Prototyp: Es wird keine echte Zahlung ausgelöst.
@@ -199,10 +213,11 @@ export function CheckoutForm() {
           </ChecklistSection>
         </div>
 
-        <aside className="flex flex-col gap-4 lg:sticky lg:top-24">
+        <aside id="bestellen" className="flex scroll-mt-28 flex-col gap-4 lg:sticky lg:top-24">
           <CheckoutChecklist steps={steps} />
           <CartSummary totals={totals} showReserveNote={reserves}>
             <button
+              id="bestellen-button"
               type="submit"
               aria-disabled={!ready}
               className={cn(

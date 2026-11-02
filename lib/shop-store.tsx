@@ -27,6 +27,7 @@ type ShopContextValue = {
   setQuantity: (id: string, qty: number) => void
   increment: (id: string) => void
   decrement: (id: string) => void
+  clearCart: () => void
   postcode: string | null
   deliveryStatus: DeliveryStatus
   checkPostcode: (postcode: string) => DeliveryStatus
@@ -85,6 +86,11 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
     })
   }, [])
 
+  const clearCart = useCallback(() => {
+    setCart({})
+    setAiFillAdded(null)
+  }, [])
+
   const checkPostcode = useCallback((value: string) => {
     setPostcode(value)
     return isDeliverablePostcode(value) ? "deliverable" : "not-deliverable"
@@ -131,6 +137,7 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
     setQuantity,
     increment,
     decrement,
+    clearCart,
     postcode,
     deliveryStatus,
     checkPostcode,

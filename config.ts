@@ -4,6 +4,22 @@ export const SHOP_NAME = "Grocery Prototype"
 export const MIN_ORDER = 20.0
 /** Delivery fee (EUR) for the first delivery. */
 export const FIRST_DELIVERY_FEE = 0.0
+export type DeliveryFeeTier = {
+  /** Lower bound of the goods value (EUR), inclusive. */
+  from: number
+  /** Upper bound of the goods value (EUR), exclusive. Omit for the open-ended top tier. */
+  to?: number
+  /** Delivery fee (EUR). 0 means free. */
+  fee: number
+}
+
+/** Mock delivery fees by goods value for regular (non-first) orders. */
+export const DELIVERY_FEE_TIERS: DeliveryFeeTier[] = [
+  { from: 20, to: 49, fee: 3.9 },
+  { from: 49, to: 79, fee: 1.9 },
+  { from: 79, fee: 0 },
+]
+
 /** Welcome credit (EUR), applied at checkout once the minimum is reached. */
 export const WELCOME_CREDIT = 10.0
 

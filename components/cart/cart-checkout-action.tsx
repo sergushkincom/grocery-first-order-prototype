@@ -6,10 +6,30 @@ import { MIN_ORDER_CENTS } from "@/lib/pricing"
 import { formatEUR } from "@/lib/format"
 import { useShop } from "@/lib/shop-store"
 
-export function CartCheckoutAction() {
+export function CartCheckoutAction({ compact = false }: { compact?: boolean }) {
   const { totals, setCartOpen, suggestAiFill } = useShop()
   const empty = totals.itemCount === 0
   const blocked = empty || !totals.minReached
+
+  if (compact) {
+    return blocked ? (
+      <button
+        type="button"
+        disabled
+        aria-label={`Zur Kasse – noch ${formatEUR(totals.remainingCents)} bis zum Mindestbestellwert`}
+        className="h-12 w-full cursor-not-allowed rounded-lg bg-white/15 px-4 font-bold text-white/50"
+      >
+        Zur Kasse
+      </button>
+    ) : (
+      <Link
+        href="/kasse"
+        className="grid h-12 w-full place-items-center rounded-lg bg-primary px-4 font-bold text-primary-foreground transition-colors hover:bg-primary/90"
+      >
+        Zur Kasse
+      </Link>
+    )
+  }
 
   return (
     <div className="mt-5 flex items-center gap-3">

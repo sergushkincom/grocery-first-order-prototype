@@ -14,8 +14,8 @@ export function MainNav() {
   const onCatalog = pathname === "/"
 
   return (
-    <nav aria-label="Hauptnavigation" className="border-t">
-      <ul className="mx-auto flex max-w-[1440px] gap-2 overflow-x-auto px-4 py-2 lg:px-8">
+    <nav aria-label="Hauptnavigation" className="max-w-full border-t">
+      <ul className="mx-auto flex w-full max-w-[min(1440px,100%)] gap-2 overflow-x-auto px-4 py-2 [scrollbar-width:none] lg:px-8">
         <li>
           <Link
             href="/"

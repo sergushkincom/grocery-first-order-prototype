@@ -9,6 +9,8 @@ import { CartListActions } from "@/components/cart/cart-list-actions"
 import { CartSummary } from "@/components/cart/cart-summary"
 import { CartCheckoutAction } from "@/components/cart/cart-checkout-action"
 import { MinimumProgress } from "@/components/deal-bar"
+import { MobileSummaryBar } from "@/components/cart/mobile-summary-bar"
+import { cn } from "@/lib/utils"
 
 export function CartPageContent() {
   const { totals } = useShop()
@@ -18,7 +20,7 @@ export function CartPageContent() {
   })).filter((group) => group.lines.length > 0)
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={cn("flex flex-col gap-6", groups.length > 0 && "pb-28 lg:pb-0")}>
       <div>
         <Link href="/" className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground">
           <ArrowLeft className="size-4" aria-hidden="true" />
@@ -58,10 +60,11 @@ export function CartPageContent() {
             </Link>
           </section>
         )}
-        <CartSummary totals={totals} className="lg:sticky lg:top-48">
+        <CartSummary totals={totals} className="hidden lg:sticky lg:top-48 lg:block">
           <CartCheckoutAction />
         </CartSummary>
       </div>
+      {groups.length > 0 && <MobileSummaryBar totals={totals} action={<CartCheckoutAction compact />} />}
     </div>
   )
 }

@@ -13,16 +13,23 @@ type CartSummaryProps = {
   totals: CartTotals
   showReserveNote?: boolean
   className?: string
+  headingId?: string
   children?: React.ReactNode
 }
 
-export function CartSummary({ totals, showReserveNote = true, className, children }: CartSummaryProps) {
+export function CartSummary({
+  totals,
+  showReserveNote = true,
+  className,
+  headingId = "cart-summary-title",
+  children,
+}: CartSummaryProps) {
   return (
     <section
-      aria-labelledby="cart-summary-title"
+      aria-labelledby={headingId}
       className={cn("rounded-xl bg-summary p-4 text-summary-foreground", className)}
     >
-      <h2 id="cart-summary-title" className="text-base font-bold">
+      <h2 id={headingId} className="text-base font-bold">
         Zusammenfassung
       </h2>
       <dl className="mt-3 flex flex-col gap-1.5 text-sm">

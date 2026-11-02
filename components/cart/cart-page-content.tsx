@@ -6,6 +6,7 @@ import { useShop } from "@/lib/shop-store"
 import { CartItemRow } from "@/components/cart/cart-item-row"
 import { CartSummary } from "@/components/cart/cart-summary"
 import { CartCheckoutAction } from "@/components/cart/cart-checkout-action"
+import { MinimumProgress } from "@/components/deal-bar"
 
 export function CartPageContent() {
   const { totals } = useShop()
@@ -18,6 +19,9 @@ export function CartPageContent() {
           Weiter einkaufen
         </Link>
         <h1 className="mt-2 text-2xl font-bold">Warenkorb</h1>
+      </div>
+      <div className="rounded-xl bg-secondary/60 px-4 py-3 text-sm ring-1 ring-border sm:px-6">
+        <MinimumProgress live={false} />
       </div>
       <div className="grid items-start gap-6 lg:grid-cols-[1fr_400px]">
         <section aria-label="Artikel" className="rounded-xl bg-card px-4 ring-1 ring-border sm:px-6">

@@ -11,7 +11,7 @@ export function DealBar() {
     <div className="border-t bg-secondary/60">
       <div className="mx-auto flex max-w-[1440px] flex-col gap-2 px-4 py-2 text-sm md:flex-row md:items-center md:justify-between md:gap-6 lg:px-8">
         <DeliveryInfo />
-        <MinimumProgress />
+        <MinimumProgress className="md:min-w-[30rem] md:max-w-2xl md:flex-1" />
       </div>
     </div>
   )
@@ -56,16 +56,17 @@ function DeliveryInfo() {
   )
 }
 
-function MinimumProgress() {
+/** `live` is off for secondary copies so screen readers don't announce the same change twice. */
+export function MinimumProgress({ className, live = true }: { className?: string; live?: boolean }) {
   const { totals, suggestAiFill } = useShop()
   const credit = `${WELCOME_CREDIT.toLocaleString("de-DE")} € Guthaben`
 
   return (
-    <div className="flex flex-col gap-2 md:min-w-[30rem] md:max-w-2xl md:flex-1">
+    <div className={cn("flex flex-col gap-2", className)}>
       <div className="flex items-center justify-between gap-3">
         <p
           className={cn("flex min-w-0 items-center gap-1.5", totals.minReached && "text-success")}
-          aria-live="polite"
+          aria-live={live ? "polite" : undefined}
         >
           {totals.minReached ? (
             <CircleCheck className="size-4 shrink-0" aria-hidden="true" />

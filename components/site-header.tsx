@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useRef } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { Leaf, Search, ShoppingCart } from "lucide-react"
@@ -12,8 +13,21 @@ import { AiAssistant, LanguageSwitch, LoginButton, MobileMenu } from "@/componen
 import { MainNav } from "@/components/main-nav"
 
 export function SiteHeader() {
+  const headerRef = useRef<HTMLElement>(null)
+
+  // Publishes the sticky header's height so sticky sub-bars and scroll offsets can sit directly below it.
+  useEffect(() => {
+    const el = headerRef.current
+    if (!el) return
+    const observer = new ResizeObserver(() => {
+      document.documentElement.style.setProperty("--header-h", `${el.offsetHeight}px`)
+    })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <header className="sticky top-0 z-40 bg-card shadow-sm">
+    <header ref={headerRef} className="sticky top-0 z-40 bg-card shadow-sm">
       <div className="mx-auto flex h-16 max-w-[1440px] items-center gap-2 px-4 sm:gap-4 lg:gap-8 lg:px-8">
         <Link href="/" className="flex shrink-0 items-center gap-2 rounded-md font-bold tracking-tight">
           <span className="grid size-9 place-items-center rounded-lg bg-primary text-primary-foreground">

@@ -24,13 +24,26 @@ export function FieldError({ id, message, className }: { id: string; message: st
   )
 }
 
-export function FormField({ id, label, value, onChange, onBlur, error, className, ...inputProps }: FormFieldProps) {
+export function FormField({
+  id,
+  label,
+  labelAction,
+  value,
+  onChange,
+  onBlur,
+  error,
+  className,
+  ...inputProps
+}: FormFieldProps & { labelAction?: React.ReactNode }) {
   const errorId = `${id}-error`
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
-      <Label htmlFor={id} className="text-sm font-medium">
-        {label}
-      </Label>
+      <div className="flex items-center justify-between gap-2">
+        <Label htmlFor={id} className="text-sm font-medium">
+          {label}
+        </Label>
+        {labelAction}
+      </div>
       <Input
         id={id}
         value={value}

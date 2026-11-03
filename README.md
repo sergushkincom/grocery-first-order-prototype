@@ -12,12 +12,12 @@ New customers build a cart before they know the deal: the minimum order, the del
 
 1. Welcome window — postcode check, then the deal: minimum order, free first delivery, next slot, starting credit.
 2. Shopping — the deal bar stays visible with progress to the minimum. "Mit KI auffüllen" suggests items; the customer confirms.
-3. Cart — one compact summary, delivery-fee tiers on demand, card hold for weighed items explained in one line.
-4. Checkout — neutral icons, three clear states (done / open / error), a stepper, and an order button that says what's still missing.
-
+3. Cart — one compact summary, delivery-fee tiers on demand, card hold for weighed items explained in one line. Items grouped by category or as one list.
+4. Checkout — one page: a sticky stepper and a checklist with the same steps, three clear states (done / open / error), and an order button that says what's still missing. "Standort verwenden" fills a sample address (demo only).
+   
 ## How it was built
 
-Generated with v0 from one prompt, then reviewed round by round. Each commit after the first is one review round; pull requests #1–#3 sum them up.
+Generated with v0 from one prompt, then reviewed round by round. Each commit after the first is one review round; pull requests #1–#4 sum them up.
 
 Deliberately not built: quantity discounts and an upsell window before checkout.
 

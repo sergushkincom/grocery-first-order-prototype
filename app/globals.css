@@ -70,5 +70,6 @@
   body {
     @apply bg-background text-foreground font-sans;
     overflow-x: hidden;
+    overflow-x: clip;
   }
 }

@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { ArrowLeft, Clock, CreditCard, Lock, MapPin, UserRound } from "lucide-react"
+import { ArrowLeft, Clock, CreditCard, Loader2, LocateFixed, Lock, MapPin, UserRound } from "lucide-react"
 import { DELIVERY_CITY, DELIVERY_SLOTS, MIN_ORDER, PAYMENT_METHODS, type PaymentMethodId } from "@/config"
 import {
   validateAddress,
@@ -20,10 +20,13 @@ import { CartSummary } from "@/components/cart/cart-summary"
 import { MobileSummaryBar } from "@/components/cart/mobile-summary-bar"
 import { ChecklistSection } from "@/components/checkout/checklist-section"
 import { CheckoutChecklist, type ChecklistStep } from "@/components/checkout/checkout-checklist"
-import { CheckoutStepper } from "@/components/checkout/checkout-stepper"
+import { CheckoutStepper, type StepperStep } from "@/components/checkout/checkout-stepper"
 import { FormField } from "@/components/checkout/form-field"
 import { PaymentPicker } from "@/components/checkout/payment-picker"
 import { SlotPicker } from "@/components/checkout/slot-picker"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+
+const DEMO_ADDRESS: Address = { street: "Marienplatz", number: "1", postcode: "80331", city: "München" }
 
 export function CheckoutForm() {
   const router = useRouter()
@@ -41,6 +44,8 @@ export function CheckoutForm() {
   const [touched, setTouched] = useState<Record<string, boolean>>({})
   const [submitAttempted, setSubmitAttempted] = useState(false)
   const [placing, setPlacing] = useState(false)
+  const [locating, setLocating] = useState(false)
+  const [usedDemoAddress, setUsedDemoAddress] = useState(false)
 
   if (!placing && !totals.minReached) {
     return (
@@ -112,19 +117,14 @@ export function CheckoutForm() {
 
   const missing = steps.filter((s) => s.status !== "done")
   const ready = missing.length === 0
-  const isDone = (id: string) => steps.find((s) => s.id === id)?.status === "done"
-  const addressStepTarget = isDone("adresse") ? "kontakt" : "adresse"
-  const stepperSteps = [
-    { label: "Warenkorb", done: true, href: "/warenkorb" },
-    {
-      label: "Adresse",
-      done: isDone("adresse") && isDone("kontakt"),
-      targetId: `section-${addressStepTarget}`,
-      focusId: `section-${addressStepTarget}-title`,
-    },
-    { label: "Lieferzeit", done: isDone("lieferzeit"), targetId: "section-lieferzeit", focusId: "section-lieferzeit-title" },
-    { label: "Zahlung", done: isDone("zahlung"), targetId: "section-zahlung", focusId: "section-zahlung-title" },
-    { label: "Bestellen", done: false, targetId: "bestellen", focusId: "bestellen-button" },
+  const stepperSteps: StepperStep[] = [
+    { label: "Warenkorb", status: "done", href: "/warenkorb" },
+    ...steps.map((s) => ({
+      label: s.title,
+      status: s.status,
+      targetId: `section-${s.id}`,
+      focusId: `section-${s.id}-title`,
+    })),
   ]
   const approx = totals.hasWeighed ? "ca. " : ""
   const buttonLabel = ready
@@ -138,6 +138,16 @@ export function CheckoutForm() {
   const updateAddress = (key: keyof Address) => (value: string) =>
     setAddress((prev) => ({ ...prev, [key]: key === "postcode" ? value.replace(/\D/g, "").slice(0, 5) : value }))
   const updateContact = (key: keyof Contact) => (value: string) => setContact((prev) => ({ ...prev, [key]: value }))
+
+  // Prototype only: fills a fixed sample address instead of calling the browser geolocation API.
+  function fillDemoAddress() {
+    setLocating(true)
+    setTimeout(() => {
+      setAddress(DEMO_ADDRESS)
+      setLocating(false)
+      setUsedDemoAddress(true)
+    }, 600)
+  }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -181,15 +191,43 @@ export function CheckoutForm() {
 
       <CheckoutStepper steps={stepperSteps} />
 
-      <div className="grid items-start gap-6 lg:grid-cols-[1fr_400px]">
-        <div className="flex flex-col gap-4">
+        <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-6 lg:grid-cols-[minmax(0,1fr)_400px]">
+          <div className="flex min-w-0 flex-col gap-4">
           <ChecklistSection id="adresse" icon={MapPin} title="Lieferadresse" status={steps[0].status} summary={steps[0].summary}>
             <div className="grid grid-cols-6 gap-3">
-              <FormField id="street" label="Straße" autoComplete="address-line1" className="col-span-4" value={address.street} onChange={updateAddress("street")} onBlur={() => touch("address.street")} error={shown(addressErrors, "address", "street")} />
+              <FormField
+                id="street"
+                label="Straße"
+                labelAction={
+                  <Tooltip>
+                    <TooltipTrigger
+                      type="button"
+                      onClick={fillDemoAddress}
+                      disabled={locating}
+                      aria-label="Standort verwenden"
+                      aria-busy={locating}
+                      className="-my-2 inline-flex h-7 shrink-0 items-center gap-1.5 rounded-md px-2 text-xs font-semibold text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:cursor-wait"
+                    >
+                      {locating ? (
+                        <Loader2 className="size-3.5 animate-spin" aria-hidden="true" />
+                      ) : (
+                        <LocateFixed className="size-3.5" aria-hidden="true" />
+                      )}
+                      <span className="hidden sm:inline">{locating ? "Wird ermittelt …" : "Standort verwenden"}</span>
+                    </TooltipTrigger>
+                    <TooltipContent className="sm:hidden">Standort verwenden</TooltipContent>
+                  </Tooltip>
+                }
+                autoComplete="address-line1"
+                className="col-span-4"
+                value={address.street} onChange={updateAddress("street")} onBlur={() => touch("address.street")} error={shown(addressErrors, "address", "street")} />
               <FormField id="number" label="Hausnr." className="col-span-2" value={address.number} onChange={updateAddress("number")} onBlur={() => touch("address.number")} error={shown(addressErrors, "address", "number")} />
               <FormField id="postcode" label="PLZ" inputMode="numeric" autoComplete="postal-code" maxLength={5} className="col-span-2" value={address.postcode} onChange={updateAddress("postcode")} onBlur={() => touch("address.postcode")} error={shown(addressErrors, "address", "postcode")} />
               <FormField id="city" label="Ort" autoComplete="address-level2" className="col-span-4" value={address.city} onChange={updateAddress("city")} onBlur={() => touch("address.city")} error={shown(addressErrors, "address", "city")} />
             </div>
+            {usedDemoAddress && (
+              <p className="mt-3 text-xs text-muted-foreground">Demo: Beispieladresse – im Produkt per Browser-Standort</p>
+            )}
           </ChecklistSection>
 
           <ChecklistSection id="kontakt" icon={UserRound} title="Kontakt" status={steps[1].status} summary={steps[1].summary}>
@@ -214,7 +252,7 @@ export function CheckoutForm() {
           </ChecklistSection>
         </div>
 
-        <aside id="bestellen" className="flex scroll-mt-48 flex-col gap-4 lg:sticky lg:top-44">
+        <aside id="bestellen" className="flex scroll-mt-[calc(var(--header-h,10rem)+5.5rem)] flex-col gap-4 lg:sticky lg:top-[calc(var(--header-h,10rem)+5rem)]">
           <CheckoutChecklist steps={steps} />
           <CartSummary totals={totals} showReserveNote={reserves} className="hidden lg:block">
             <button

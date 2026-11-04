@@ -21,6 +21,8 @@ Generated with v0 from one prompt, then reviewed round by round. Each commit aft
 
 Deliberately not built: quantity discounts and an upsell window before checkout.
 
+Every round is listed in [AGENT_LOG.md](AGENT_LOG.md).
+
 ## Stack
 
 Next.js, TypeScript, Tailwind. Business rules in `config.ts`, mock products in `data/products.ts`.

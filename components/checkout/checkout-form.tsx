@@ -28,6 +28,12 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 
 const DEMO_ADDRESS: Address = { street: "Marienplatz", number: "1", postcode: "80331", city: "München" }
 
+// Random demo order number. Lives outside the component so it is clearly
+// only called from the submit handler, never during render.
+function makeOrderNumber() {
+  return `GP-${Math.floor(100000 + Math.random() * 900000)}`
+}
+
 export function CheckoutForm() {
   const router = useRouter()
   const { totals, postcode, deliveryStatus, placeOrder } = useShop()
@@ -160,7 +166,7 @@ export function CheckoutForm() {
     }
     setPlacing(true)
     placeOrder({
-      number: `GP-${Math.floor(100000 + Math.random() * 900000)}`,
+      number: makeOrderNumber(),
       firstName: contact.firstName.trim(),
       email: contact.email.trim(),
       slotLabel: `${selectedSlot!.day} ${selectedSlot!.time}`,

@@ -2,6 +2,8 @@
 
 A clickable prototype of a first-order flow for an online grocery shop in Germany. Mock data only — no real orders or payments. Not affiliated with any real shop.
 
+Relevant for grocery-delivery and quick-commerce products, where the first order decides whether a customer comes back.
+
 **Live:** https://grocery-first-order-prototype.vercel.app — works on desktop and mobile. To test delivery, tap the "80331" hint in the first window.
 
 ## The idea

@@ -25,6 +25,14 @@ Deliberately not built: quantity discounts and an upsell window before checkout.
 
 Every round is listed in [AGENT_LOG.md](AGENT_LOG.md).
 
+### Before / after
+
+![Checkout before and after the review rounds](docs/before-after-checkout.png)
+
+Checkout with the same cart, 1280 × 860. Left: the first v0 output (commit `a00284e`). Right: current main.
+The review rounds kept the deal visible on checkout (deal bar with progress to the minimum), added a sticky stepper and one icon per section, and cut the summary to one line about weighed items.
+The order button already listed what was missing; it stayed, because the customer should see the next step at the point of paying.
+
 ## Stack
 
 Next.js, TypeScript, Tailwind. Business rules in `config.ts`, mock products in `data/products.ts`.

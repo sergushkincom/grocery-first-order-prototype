@@ -18,7 +18,7 @@ export function MobileSummaryBar({ totals, showReserveNote, action }: MobileSumm
   const panelId = useId()
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-30 bg-summary text-summary-foreground shadow-[0_-6px_20px_rgba(0,0,0,0.18)] lg:hidden">
+    <div data-mobile-summary-bar className="fixed inset-x-0 bottom-0 z-30 bg-summary text-summary-foreground shadow-[0_-6px_20px_rgba(0,0,0,0.18)] lg:hidden">
       <div id={panelId} hidden={!open} className="max-h-[60vh] overflow-y-auto border-b border-white/15 px-4 pb-4 pt-3">
         <CartSummary
           totals={totals}

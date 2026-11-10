@@ -11,7 +11,6 @@ import { CartSummary } from "@/components/cart/cart-summary"
 import { CartCheckoutAction } from "@/components/cart/cart-checkout-action"
 import { MobileSummaryBar } from "@/components/cart/mobile-summary-bar"
 import { Switch } from "@/components/ui/switch"
-import { cn } from "@/lib/utils"
 
 export function CartPageContent() {
   const { totals } = useShop()
@@ -23,7 +22,7 @@ export function CartPageContent() {
   const hasItems = groups.length > 0
 
   return (
-    <div className={cn("flex flex-col gap-6 pt-6 lg:pt-8", hasItems && "pb-28 lg:pb-0")}>
+    <div className="flex flex-col gap-6 pt-6 lg:pt-8">
       <div>
         <Link href="/" className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground">
           <ArrowLeft className="size-4" aria-hidden="true" />

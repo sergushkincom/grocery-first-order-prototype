@@ -182,7 +182,7 @@ export function CheckoutForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6 pb-28 lg:pb-0">
+    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6">
       <div>
         <Link
           href="/warenkorb"

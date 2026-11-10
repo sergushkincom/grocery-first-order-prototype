@@ -38,3 +38,7 @@ The order button already listed what was missing; it stayed, because the custome
 ## Stack
 
 Next.js, TypeScript, Tailwind. Business rules in `config.ts`, mock products in `data/products.ts`.
+
+## License
+
+MIT, see [LICENSE](LICENSE).

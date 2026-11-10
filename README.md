@@ -6,6 +6,8 @@ Relevant for grocery-delivery and quick-commerce products, where the first order
 
 **Live:** https://grocery-first-order-prototype.vercel.app — works on desktop and mobile. To test delivery, tap the "80331" hint in the first window.
 
+**Case study:** [Design Case Study #12 — First order: show the deal before the cart](https://dribbble.com/shots/27878569-Design-Case-Study-12-First-Order-Show-the-Deal-Before-Cart) on Dribbble
+
 ## The idea
 
 New customers build a cart before they know the deal: the minimum order, the delivery fee, the next free slot, and the final price. They learn these rules one by one, close to payment. This prototype shows the deal first and keeps it visible.

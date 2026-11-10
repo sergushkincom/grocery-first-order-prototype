@@ -19,6 +19,7 @@ Two types: **agent mistake** (the prompt said X, the agent did Y) and **my decis
 | 11 | README | Rewritten by hand: idea, flow, how it was built. | by hand | [a54dee9](https://github.com/sergushkincom/grocery-first-order-prototype/commit/a54dee9c30678f905949f8fe29f34d7c97ef971f) |
 | 12 | Mobile | Never checked mobile: the page was 495 px wide on a 375 px screen and the cart button scrolled away. Compact header, sticky summary, "check at 375 px" added to prompts. | agent mistake | [247cfd6](https://github.com/sergushkincom/grocery-first-order-prototype/commit/247cfd6f2a88a66fb7cce17291899234b2b33f12) |
 | 13 | Cart and checkout | One progress bar; grouped or flat cart list; sticky stepper with the same steps as the checklist; sample-address button (demo only). This time the agent checked 375 px itself and fixed a 6 px overflow. | my decision | [0ddad6d](https://github.com/sergushkincom/grocery-first-order-prototype/commit/0ddad6d4227fbc01d5458325dbd6752f5ac2f9b5) |
+| 14 | Footer | Footer is now a thin "about this project" row: GitHub, README, Built by Denys Sergushkin. On mobile cart and checkout it scrolls into view above the sticky summary bar, not under it. | my decision | [45a89a1](https://github.com/sergushkincom/grocery-first-order-prototype/commit/45a89a181e267614d15b70766499751d6516fa04) |
 
 ## Deliberately not built
 

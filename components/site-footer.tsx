@@ -19,13 +19,14 @@ const LINKS = [
 ]
 
 /**
- * Who made this and where the code is. One thin bar at the end of the page, in normal flow.
- * Below lg, cart and checkout pin the summary bar to the bottom; the extra bottom padding
- * keeps the footer scrollable above it instead of hidden underneath.
+ * Who made this and where the code is. One thin bar pinned to the bottom of the screen, so it's
+ * visible without scrolling. Below lg, cart and checkout pin the summary bar to the bottom; there
+ * the footer goes back to normal flow at the end of the page, with extra padding so it scrolls
+ * above the bar instead of hiding underneath.
  */
 export function SiteFooter() {
   return (
-    <footer className="mt-12 border-t bg-muted max-lg:[body:has([data-mobile-summary-bar])_&]:pb-24">
+    <footer className="sticky bottom-0 z-20 mt-12 border-t bg-muted max-lg:[body:has([data-mobile-summary-bar])_&]:static max-lg:[body:has([data-mobile-summary-bar])_&]:pb-24">
       <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-x-4 gap-y-1.5 px-4 py-2.5 text-xs text-muted-foreground lg:px-8">
         <p>Design prototype · Clickable prototype with sample data. No real orders or payments.</p>
         <nav aria-label="About this project" className="flex items-center gap-4 max-sm:w-full max-sm:justify-between">

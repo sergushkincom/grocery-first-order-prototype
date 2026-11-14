@@ -1,6 +1,6 @@
 # Grocery first-order prototype
 
-A clickable prototype of a first-order flow for an online grocery shop in Germany. Mock data only — no real orders or payments. Not affiliated with any real shop.
+A clickable prototype of a first-order flow for an online grocery shop in Germany, made as a take-home design task for Rohlik Group (Knuspr in Germany). Mock data only — no real orders or payments. Not an official Knuspr or Rohlik product.
 
 Relevant for grocery-delivery and quick-commerce products, where the first order decides whether a customer comes back.
 

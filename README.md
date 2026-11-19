@@ -10,7 +10,7 @@ Relevant for grocery-delivery and quick-commerce products, where the first order
 
 ![First order: postcode 80331 → the deal → shopping with the deal bar → cart → checkout](docs/first-order-flow.gif)
 
-Greeting → cart → checkout in the live prototype: postcode 80331, the deal, two items past the €20 minimum, the cart summary, one-page checkout.
+Greeting → cart → checkout, recorded from main at 1280 × 800: postcode 80331, the deal, two items past the €20 minimum, the cart summary, one-page checkout.
 
 ## The idea
 

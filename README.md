@@ -8,6 +8,10 @@ Relevant for grocery-delivery and quick-commerce products, where the first order
 
 **Case study:** [Design Case Study #12 — First order: show the deal before the cart](https://dribbble.com/shots/27878569-Design-Case-Study-12-First-Order-Show-the-Deal-Before-Cart) on Dribbble
 
+![First order: postcode 80331 → the deal → shopping with the deal bar → cart → checkout](docs/first-order-flow.gif)
+
+Greeting → cart → checkout, recorded from main at 1280 × 800: postcode 80331, the deal, two items past the €20 minimum, the cart summary, one-page checkout.
+
 ## The idea
 
 New customers build a cart before they know the deal: the minimum order, the delivery fee, the next free slot, and the final price. They learn these rules one by one, close to payment. This prototype shows the deal first and keeps it visible.

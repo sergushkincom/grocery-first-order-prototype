@@ -13,10 +13,27 @@ import './globals.css'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
+const title = 'Grocery first-order prototype – show the deal before the cart'
+const description =
+  'A clickable prototype of a first order in an online grocery shop in Germany: minimum order, delivery fee, next slot and final price are shown before the cart and stay visible until checkout. Mock data only.'
+
 export const metadata: Metadata = {
-  title: 'Grocery Prototype – Erstbestellung',
-  description: 'Klickbarer Prototyp für die Erstbestellung in einem Online-Supermarkt.',
+  metadataBase: new URL('https://grocery-first-order-prototype.vercel.app'),
+  title,
+  description,
   generator: 'v0.app',
+  openGraph: {
+    type: 'website',
+    url: '/',
+    siteName: 'Grocery first-order prototype',
+    title,
+    description,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title,
+    description,
+  },
 }
 
 export const viewport: Viewport = {

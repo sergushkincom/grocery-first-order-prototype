@@ -1,10 +1,54 @@
 "use client"
 
-import { CircleCheck, Clock, MapPin, Sparkles, Truck } from "lucide-react"
+import { useEffect, useState, useSyncExternalStore } from "react"
+import { Clock, MapPin, Sparkles } from "lucide-react"
+import { Check, Truck } from "lucide"
+import { MorphIcon } from "morphicons/react"
 import { DELIVERY_CITY, MIN_ORDER, NEXT_SLOT, WELCOME_CREDIT } from "@/config"
 import { formatEUR } from "@/lib/format"
+import { minimumLiveAnnouncement, playsReachedGlow, thresholdCrossing } from "@/lib/minimum-threshold"
 import { useShop } from "@/lib/shop-store"
 import { cn } from "@/lib/utils"
+import { MinimumMeter } from "@/components/minimum-meter"
+
+const MORPH_SPRING = { stiffness: 120, damping: 22 }
+const GLOW_MS = 720
+
+function subscribeReducedMotion(onChange: () => void) {
+  const media = window.matchMedia("(prefers-reduced-motion: reduce)")
+  media.addEventListener("change", onChange)
+  return () => media.removeEventListener("change", onChange)
+}
+
+function usePrefersReducedMotion() {
+  return useSyncExternalStore(
+    subscribeReducedMotion,
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    () => false,
+  )
+}
+
+/** Glows for one short beat after the cart crosses the minimum, then turns itself off. */
+function useReachedGlow(minReached: boolean) {
+  const reducedMotion = usePrefersReducedMotion()
+  const [wasReached, setWasReached] = useState(minReached)
+  const [glowing, setGlowing] = useState(false)
+
+  if (minReached !== wasReached) {
+    const crossing = thresholdCrossing(wasReached, minReached)
+    setWasReached(minReached)
+    if (playsReachedGlow(crossing, reducedMotion)) setGlowing(true)
+    else if (crossing === "dropped") setGlowing(false)
+  }
+
+  useEffect(() => {
+    if (!glowing) return
+    const timer = window.setTimeout(() => setGlowing(false), GLOW_MS)
+    return () => window.clearTimeout(timer)
+  }, [glowing])
+
+  return glowing
+}
 
 export function DealBar() {
   return (
@@ -67,12 +111,19 @@ export function MinimumProgress({
   tone?: "light" | "dark"
 }) {
   const { totals, suggestAiFill } = useShop()
-  const credit = `${WELCOME_CREDIT.toLocaleString("de-DE")} € Guthaben`
+  const glowing = useReachedGlow(totals.minReached)
+  const creditAmount = `${WELCOME_CREDIT.toLocaleString("de-DE")} €`
+  const credit = `${creditAmount} Guthaben`
   const dark = tone === "dark"
   const textClass = dark ? undefined : "truncate"
 
   return (
     <div className={cn("flex flex-col gap-2", className)}>
+      {live && (
+        <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+          {minimumLiveAnnouncement(totals.minReached, formatEUR(totals.remainingCents), creditAmount)}
+        </p>
+      )}
       <div className={cn("flex justify-between gap-3", dark ? "items-start" : "items-center")}>
         <p
           className={cn(
@@ -80,13 +131,20 @@ export function MinimumProgress({
             dark ? "items-start" : "items-center",
             totals.minReached && (dark ? "text-[#8fd19e]" : "text-success"),
           )}
-          aria-live={live ? "polite" : undefined}
         >
-          {totals.minReached ? (
-            <CircleCheck className={cn("size-4 shrink-0", dark && "mt-0.5")} aria-hidden="true" />
-          ) : (
-            <Truck className={cn("size-4 shrink-0 text-primary", dark && "mt-0.5")} aria-hidden="true" />
-          )}
+          <MorphIcon
+            icon={totals.minReached ? Check : Truck}
+            size={16}
+            strokeWidth={2}
+            color="currentColor"
+            spring={MORPH_SPRING}
+            reducedMotion="user"
+            className={cn(
+              "shrink-0 transition-colors duration-500 ease-out motion-reduce:transition-none",
+              totals.minReached ? (dark ? "text-[#8fd19e]" : "text-success") : "text-primary",
+              dark && "mt-0.5",
+            )}
+          />
           {totals.minReached ? (
             <span className={textClass}>
               <strong>Mindestbestellwert erreicht</strong> – erste Lieferung gratis + {credit}
@@ -112,19 +170,7 @@ export function MinimumProgress({
           </button>
         )}
       </div>
-      <div
-        role="progressbar"
-        aria-label="Fortschritt zum Mindestbestellwert"
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={Math.round(totals.progress * 100)}
-        className={cn("h-[6px] overflow-hidden rounded-full", dark ? "bg-white/25" : "bg-neutral-300")}
-      >
-        <div
-          className="h-full rounded-full bg-primary transition-all duration-300"
-          style={{ width: `${totals.progress * 100}%` }}
-        />
-      </div>
+      <MinimumMeter progress={totals.progress} reached={totals.minReached} glowing={glowing} tone={tone} />
     </div>
   )
 }

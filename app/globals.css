@@ -60,6 +60,66 @@
   --radius: 0.625rem;
 }
 
+@keyframes threshold-bar-glow {
+  0% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+  38% {
+    box-shadow:
+      0 0 0 1px var(--threshold-glow-color),
+      0 0 16px 4px var(--threshold-glow-color);
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+@keyframes threshold-fill-glow {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  40% {
+    filter: brightness(1.35);
+  }
+}
+
+@keyframes threshold-bar-sheen {
+  0% {
+    transform: translateX(-130%);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.95;
+  }
+  100% {
+    transform: translateX(340%);
+    opacity: 0;
+  }
+}
+
+.threshold-bar-glow {
+  animation: threshold-bar-glow 720ms ease-out both;
+}
+
+.threshold-fill-glow {
+  animation: threshold-fill-glow 720ms ease-out both;
+}
+
+.threshold-bar-sheen {
+  opacity: 0;
+  background: linear-gradient(100deg, transparent 0%, rgba(255, 255, 255, 0.85) 50%, transparent 100%);
+  animation: threshold-bar-sheen 720ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .threshold-bar-glow,
+  .threshold-fill-glow,
+  .threshold-bar-sheen {
+    animation: none;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

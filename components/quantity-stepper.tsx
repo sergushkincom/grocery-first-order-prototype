@@ -3,6 +3,7 @@
 import { Minus, Plus, Trash2 } from "lucide-react"
 import { MAX_QTY_PER_ITEM } from "@/config"
 import { useShop } from "@/lib/shop-store"
+import { thresholdCrossing } from "@/lib/minimum-threshold"
 import { computeTotals } from "@/lib/pricing"
 import { showProgressToast } from "@/components/progress-toast"
 import { cn } from "@/lib/utils"
@@ -29,7 +30,9 @@ export function QuantityStepper({
   const increment = (id: string) => {
     addOne(id)
     if (notifyOnAdd && qty < MAX_QTY_PER_ITEM) {
-      showProgressToast(productName, computeTotals({ ...cart, [id]: qty + 1 }))
+      const before = computeTotals(cart)
+      const after = computeTotals({ ...cart, [id]: qty + 1 })
+      showProgressToast(productName, after, thresholdCrossing(before.minReached, after.minReached))
     }
   }
 

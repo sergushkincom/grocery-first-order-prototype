@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { Leaf, Search, ShoppingCart } from "lucide-react"
@@ -8,6 +8,7 @@ import { SHOP_NAME } from "@/config"
 import { formatEUR } from "@/lib/format"
 import { useShop } from "@/lib/shop-store"
 import { cn } from "@/lib/utils"
+import { onCartFlightLanded } from "@/components/cart-flight"
 import { DealBar } from "@/components/deal-bar"
 import { AiAssistant, LanguageSwitch, LoginButton, MobileMenu } from "@/components/header-actions"
 import { MainNav } from "@/components/main-nav"
@@ -95,6 +96,9 @@ function SearchField({ className }: { className?: string }) {
 function CartButton({ className }: { className?: string }) {
   const { totals, setCartOpen } = useShop()
   const hasItems = totals.itemCount > 0
+  const [bumps, setBumps] = useState(0)
+
+  useEffect(() => onCartFlightLanded(() => setBumps((count) => count + 1)), [])
 
   return (
     <button
@@ -106,10 +110,16 @@ function CartButton({ className }: { className?: string }) {
         className,
       )}
     >
-      <span className="relative">
+      <span className="relative" data-cart-target>
         <ShoppingCart className="size-5" aria-hidden="true" />
         {hasItems && (
-          <span className="absolute -right-2 -top-2 grid min-w-4 place-items-center rounded-full bg-summary px-1 text-[0.65rem] leading-4 text-summary-foreground">
+          <span
+            key={bumps}
+            className={cn(
+              "absolute -right-2 -top-2 grid min-w-4 place-items-center rounded-full bg-summary px-1 text-[0.65rem] leading-4 text-summary-foreground",
+              bumps > 0 && "cart-count-bump",
+            )}
+          >
             {totals.itemCount}
           </span>
         )}

@@ -14,6 +14,8 @@ type QuantityStepperProps = {
   variant?: "solid" | "outline"
   /** Shows a short progress-to-minimum toast after each add. */
   notifyOnAdd?: boolean
+  /** Fires once per real increase, before the cart re-renders. */
+  onAdded?: () => void
   className?: string
 }
 
@@ -22,14 +24,17 @@ export function QuantityStepper({
   productName,
   variant = "solid",
   notifyOnAdd = false,
+  onAdded,
   className,
 }: QuantityStepperProps) {
   const { cart, increment: addOne, decrement } = useShop()
   const qty = cart[productId] ?? 0
 
   const increment = (id: string) => {
+    if (qty >= MAX_QTY_PER_ITEM) return
     addOne(id)
-    if (notifyOnAdd && qty < MAX_QTY_PER_ITEM) {
+    onAdded?.()
+    if (notifyOnAdd) {
       const before = computeTotals(cart)
       const after = computeTotals({ ...cart, [id]: qty + 1 })
       showProgressToast(productName, after, thresholdCrossing(before.minReached, after.minReached))

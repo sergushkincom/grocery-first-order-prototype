@@ -1,6 +1,10 @@
+"use client"
+
+import { useRef } from "react"
 import Image from "next/image"
 import type { Product } from "@/data/products"
 import { formatEUR, toCents } from "@/lib/format"
+import { flyProductToCart } from "@/components/cart-flight"
 import { Price } from "@/components/price"
 import { QuantityStepper } from "@/components/quantity-stepper"
 import { cn } from "@/lib/utils"
@@ -20,10 +24,11 @@ function DiscountPill({ label, className }: { label: string; className?: string 
 
 export function ProductCard({ product }: { product: Product }) {
   const title = `${product.name}, ${product.amount}`
+  const thumbnailRef = useRef<HTMLDivElement>(null)
 
   return (
     <article className="flex w-full flex-col rounded-xl bg-card p-3 ring-1 ring-border transition-shadow hover:shadow-md">
-      <div className="relative aspect-square overflow-hidden rounded-lg bg-muted">
+      <div ref={thumbnailRef} className="relative aspect-square overflow-hidden rounded-lg bg-muted">
         <Image
           src={product.image}
           alt={product.name}
@@ -62,7 +67,15 @@ export function ProductCard({ product }: { product: Product }) {
               <Price cents={toCents(product.price)} className={product.oldPrice ? "text-destructive" : undefined} />
               {product.discountLabel && <DiscountPill label={product.discountLabel} className="hidden sm:inline-flex" />}
             </div>
-            <QuantityStepper productId={product.id} productName={product.name} notifyOnAdd />
+            <QuantityStepper
+              productId={product.id}
+              productName={product.name}
+              notifyOnAdd
+              onAdded={() => {
+                const thumbnail = thumbnailRef.current
+                if (thumbnail) flyProductToCart(thumbnail, product.image)
+              }}
+            />
           </div>
         </div>
       </div>

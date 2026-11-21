@@ -112,10 +112,33 @@
   animation: threshold-bar-sheen 720ms ease-out both;
 }
 
+@keyframes cart-count-bump {
+  0% {
+    transform: scale(1);
+  }
+  32% {
+    transform: scale(1.42);
+  }
+  58% {
+    transform: scale(0.9);
+  }
+  78% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.cart-count-bump {
+  animation: cart-count-bump 380ms linear both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .threshold-bar-glow,
   .threshold-fill-glow,
-  .threshold-bar-sheen {
+  .threshold-bar-sheen,
+  .cart-count-bump {
     animation: none;
   }
 }

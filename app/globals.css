@@ -143,6 +143,50 @@
   }
 }
 
+@keyframes confirm-row-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.confirm-row {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.confirm-play .confirm-row {
+  animation-name: confirm-row-in;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+}
+
+.confirm-check-stroke {
+  opacity: 0;
+}
+
+.confirm-play .confirm-check-stroke {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confirm-row,
+  .confirm-play .confirm-row {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+
+  .confirm-check-stroke,
+  .confirm-play .confirm-check-stroke {
+    opacity: 1;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

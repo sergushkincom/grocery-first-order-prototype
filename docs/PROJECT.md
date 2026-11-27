@@ -27,6 +27,10 @@ Changing the quantity inside the cart does not fly. With `prefers-reduced-motion
 
 The arc is `flightControl` in `lib/fly-to-cart.ts`.
 
+## Confirmation
+
+The check is drawn on as a line, then Lieferung, Adresse, Zahlung and Gesamt fade and rise one after another while the total counts up. With `prefers-reduced-motion: reduce`, the check, the rows and the total are already final. The stroke follows [line-art-animation](https://github.com/JDhruv14/line-art-animation) (MIT).
+
 ## Checks
 
 `pnpm run typecheck`, `pnpm run lint`, `pnpm run test`, `pnpm run build`, `pnpm run test:e2e`.
